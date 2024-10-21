@@ -42,11 +42,6 @@ jobs:
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
 
-      - name: Test SonarQube connectivity
-        run: |
-          curl -v ${{ secrets.SONAR_URL_FRONT }}
-
-
       - name: Build and analyze the front-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
@@ -62,6 +57,7 @@ jobs:
           -Dsonar.host.url=${{ secrets.SONAR_URL_FRONT }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN_FRONT }} \
           -Dsonar.ws.timeout=36000 \
-          -X
+          -X \
+          -Dsonar.verbose=true
 
 
