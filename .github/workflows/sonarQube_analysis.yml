@@ -43,6 +43,9 @@ jobs:
         run: rm -rf /home/runner/.sonar/_tmp/
 
       - name: Build and analyze the front-end
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL_FRONT }}
         run: |
           cd front
           npm install
