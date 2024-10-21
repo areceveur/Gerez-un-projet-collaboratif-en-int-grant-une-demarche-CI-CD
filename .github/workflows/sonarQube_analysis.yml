@@ -58,6 +58,7 @@ jobs:
           -Dsonar.login=${{ secrets.SONAR_TOKEN_FRONT }} \
           -Dsonar.ws.timeout=36000 \
           -X \
-          -Dsonar.verbose=true
+          -Dsonar.verbose=true \
+          -Dsonar.plugins.javascript.version=10.15.0.27423 \
 
 
