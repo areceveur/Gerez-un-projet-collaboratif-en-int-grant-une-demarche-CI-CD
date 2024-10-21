@@ -44,8 +44,8 @@ jobs:
 
       - name: Build and analyze the front-end
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL_FRONT }}
+          SONAR_TOKEN_FRONT: ${{ secrets.SONAR_TOKEN_FRONT }}
+          SONAR_URL_FRONT: ${{ secrets.SONAR_URL_FRONT }}
         run: |
           cd front
           npm install
