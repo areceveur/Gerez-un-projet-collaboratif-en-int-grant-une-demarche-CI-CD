@@ -45,7 +45,7 @@ jobs:
       - name: Build and analyze the front-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_SECRET_FRONT }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL_FRONT }}
         run: |
           cd front
           npm install
@@ -54,6 +54,6 @@ jobs:
           -Dsonar.sources=src \
           -Dsonar.tests=src \
           -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_SECRET_FRONT }} \
+          -Dsonar.host.url=${{ secrets.SONAR_URL_FRONT }} \
           -Dsonar.token=${{ secrets.SONAR_TOKEN_FRONT }}
 
