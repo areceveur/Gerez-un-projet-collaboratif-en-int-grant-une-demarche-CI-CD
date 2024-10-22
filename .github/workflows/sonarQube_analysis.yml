@@ -51,8 +51,8 @@ jobs:
           npm install
           npx sonar-scanner \
           -Dsonar.projectKey=BobApp-front \
-          -Dsonar.sources=src \
-          -Dsonar.tests=src \
+          -Dsonar.sources=src/app \
+          -Dsonar.tests=src/app \
           -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info \
           -Dsonar.host.url=${{ secrets.SONAR_URL_FRONT }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN_FRONT }} \
