@@ -58,7 +58,7 @@ jobs:
           -Dsonar.login=${{ secrets.SONAR_TOKEN_FRONT }} \
           -Dsonar.ws.timeout=36000 \
           -Dsonar.plugins.javascript.version=10.15.0.27423 \
-          -Dsonar.exclusions=**/*.spec.ts,**/*.test.js,node_modules/**,src/assets/**,src/polyfills.ts,src/index.html \
+          -Dsonar.exclusions=**/*.spec.ts,**/*.test.js,node_modules/**,src/assets/**,src/polyfills.ts,src/index.html,src/environments/environment.prod.ts \
           -X
 
 
