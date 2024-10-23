@@ -28,7 +28,8 @@ jobs:
       - name: Login to Docker Hub
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REPO }} --password-stdin
+          DOCKER_USERNAME: ${{ secrets.DOCKER_REPO }}
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u "${{ secrets.DOCKER_REPO }}" --password-stdin
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
