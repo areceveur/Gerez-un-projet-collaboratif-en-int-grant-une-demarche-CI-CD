@@ -13,18 +13,21 @@ jobs:
     name: Build and analyze
     runs-on: ubuntu-latest
 
+    services:
+      sonarqube:
+        image: sonarqube:latest
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl -f http://localhost:9000/api/system/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Debug Docker Login
-        env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_REPO }}
-        run: |
-          echo "length : ${#DOCKER_PASSWORD}"
-          echo "DOCKER USERNAME: ${{ secrets.DOCKER_REPO }}"
 
       - name: Login to Docker Hub
         env:
@@ -55,47 +58,48 @@ jobs:
       - name: Build and analyze the back-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL_BACK }}
+          SONAR_HOST_URL: 'http://localhost:9000'
         run: |
           cd back
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=BobApp -Dsonar.projectName='BobApp'
-
-      - name: Build a Docker container for the back-end
-        run: |
-          cd back
-          docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest .
-
-      - name: Push docker image
-        run: |
-          cd back
-          docker push ${{ secrets.DOCKER_REPO }}/bobpap-backend:latest
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=BobApp \
+          -Dsonar.projectName='BobApp'
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
 
       - name: Build and analyze the front-end
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL_BACK }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}
+          SONAR_HOST_URL: 'http://localhost:9000'
         run: |
           cd front
           npm install
           npx sonar-scanner \
-          -Dsonar.projectKey=BobApp-front \
+          -Dsonar.projectKey=BobApp \
           -Dsonar.sources=src/app \
           -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info \
-          -Dsonar.host.url=${{ secrets.SONAR_URL_FRONT }} \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN_FRONT }} \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_FRONT }} \
           -Dsonar.ws.timeout=36000 \
           -Dsonar.plugins.javascript.version=10.15.0.27423 \
           -Dsonar.exclusions=**/*.spec.ts,**/*.test.js,node_modules/**,src/assets/**,src/polyfills.ts,src/index.html,src/environments/*
 
-      - name: Build a Docker container for the front-end
+      - name: Build Docker images
         run: |
-          cd front
-          docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
+          cd back
+          docker build -t ${{ secrets.DOCKER_REPO }}/sonarqube-bobapp-back:latest .
+            
+          cd ../front
+          docker build -t ${{ secrets.DOCKER_REPO }}/sonarqube-bobapp-front:latest .
 
-      - name: Push docker image
+      - name: Login to Docker Hub
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_REPO }}
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u "${{ secrets.DOCKER_REPO }}" --password-stdin
+
+      - name: Push Docker images
         run: |
-          cd front
-          docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest
+          docker push ${{ secrets.DOCKER_REPO }}/sonarqube-bobapp-back:latest
+                
+          docker push ${{ secrets.DOCKER_REPO }}/sonarqube-bobapp-front:latest
