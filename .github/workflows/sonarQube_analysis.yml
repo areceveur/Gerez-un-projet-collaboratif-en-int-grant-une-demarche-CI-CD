@@ -34,6 +34,19 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
+      - name: Wait for SonarQube to be ready
+        run: |
+          echo "Waiting for SonarQube to be ready..."
+          for i in {1..30}; do
+            if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
+              echo "SonarQube is up!"
+              break
+            fi
+            echo "Waiting for SonarQube to start..."
+            sleep 10
+          done
+
+
       - name: SonarQube Scan (back-end)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
