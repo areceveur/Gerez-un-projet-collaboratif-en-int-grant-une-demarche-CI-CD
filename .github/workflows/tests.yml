@@ -63,7 +63,7 @@ jobs:
       - name: Navigate to the front folder and run Karma tests
         run: |
           cd front
-          nom run test:coverage -- --no-watch --no-progress --browsers=ChromeHeadless
+          npm run test:coverage -- --no-watch --no-progress --browsers=ChromeHeadless
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
