@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -14,23 +17,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO }} --password-sdtin
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'zulu'
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Build and analyze the back-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
@@ -38,6 +48,12 @@ jobs:
         run: |
           cd back
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=BobApp -Dsonar.projectName='BobApp'
+
+      - name: Build a Docker container for the back-end
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest .
+
+      - name: Push docker image
+        run: docker push ${{ secrets.DOCKER_REPO }}/bobpap-backend:latest
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
@@ -59,4 +75,8 @@ jobs:
           -Dsonar.plugins.javascript.version=10.15.0.27423 \
           -Dsonar.exclusions=**/*.spec.ts,**/*.test.js,node_modules/**,src/assets/**,src/polyfills.ts,src/index.html,src/environments/*
 
+      - name: Build a Docker container for the front-end
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
 
+      - name: Push docker image
+        run: docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest

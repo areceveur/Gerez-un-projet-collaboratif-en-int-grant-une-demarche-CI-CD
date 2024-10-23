@@ -1,0 +1,71 @@
+name: Workflow des tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO }}" --password-stdin
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build and Run tests for the back-end
+        run: |
+          cd back
+          mvn clean test
+          mvn jacoco:report
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco
+
+      - name: Build a Docker container for the back-end
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest .
+
+      - name: Push docker image
+        run: docker push ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Navigate to the front folder and install dependencies
+        run: |
+          cd front
+          npm install
+
+      - name: Navigate to the front folder and run Karma tests
+        run: |
+          cd front
+          nom run test:coverage -- --no-watch --no-progress --browsers=ChromeHeadless
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: front/coverage/bobapp
+
+      - name: Build a Docker container for the front-end
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
+
+      - name: Push docker image
+        run: docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest
