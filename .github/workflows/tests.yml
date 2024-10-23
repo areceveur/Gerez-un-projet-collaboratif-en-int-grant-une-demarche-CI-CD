@@ -68,7 +68,11 @@ jobs:
           path: front/coverage/bobapp
 
       - name: Build a Docker container for the front-end
-        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
+        run: |
+          cd front
+          docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
 
       - name: Push docker image
-        run: docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest
+        run: |
+          cd front
+          docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest

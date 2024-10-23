@@ -61,10 +61,14 @@ jobs:
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=BobApp -Dsonar.projectName='BobApp'
 
       - name: Build a Docker container for the back-end
-        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest .
+        run: |
+          cd back
+          docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-backend:latest .
 
       - name: Push docker image
-        run: docker push ${{ secrets.DOCKER_REPO }}/bobpap-backend:latest
+        run: |
+          cd back
+          docker push ${{ secrets.DOCKER_REPO }}/bobpap-backend:latest
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
@@ -87,7 +91,11 @@ jobs:
           -Dsonar.exclusions=**/*.spec.ts,**/*.test.js,node_modules/**,src/assets/**,src/polyfills.ts,src/index.html,src/environments/*
 
       - name: Build a Docker container for the front-end
-        run: docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
+        run: |
+          cd front
+          docker build -t ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest .
 
       - name: Push docker image
-        run: docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest
+        run: |
+          cd front
+          docker push ${{ secrets.DOCKER_REPO }}/bobapp-frontend:latest
