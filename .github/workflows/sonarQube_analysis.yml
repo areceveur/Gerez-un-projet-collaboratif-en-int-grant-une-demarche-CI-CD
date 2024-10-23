@@ -59,7 +59,8 @@ jobs:
           -Dsonar.host.url=http://localhost:9000 \
           -Dsonar.projectName='BobApp' \
           -Dsonar.login=${{ secrets.SONAR_TOKEN_BACK }} \
-          -Dsonar.password=${{ secrets.SONAR_PASSWORD }}
+          -Dsonar.password=${{ secrets.SONAR_PASSWORD }} \
+          -X
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
