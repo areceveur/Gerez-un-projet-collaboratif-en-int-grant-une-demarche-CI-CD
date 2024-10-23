@@ -50,14 +50,14 @@ jobs:
       - name: SonarQube Scan (back-end)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
+          SONAR_HOST_URL: 'http://localhost:9000'
         run: |
           cd back
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=BobApp \
           -Dsonar.host.url=http://localhost:9000 \
           -Dsonar.projectName='BobApp' \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN_BACK }} \
-          -Dsonar.password=${{ secrets.SONAR_PASSWORD }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_BACK }}
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
