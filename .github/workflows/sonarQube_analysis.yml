@@ -19,6 +19,8 @@ jobs:
           fetch-depth: 0
 
       - name: Debug Docker Login
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "length : ${#DOCKER_PASSWORD}"
           echo "DOCKER USERNAME: ${{ secrets.DOCKER_REPO }}"
