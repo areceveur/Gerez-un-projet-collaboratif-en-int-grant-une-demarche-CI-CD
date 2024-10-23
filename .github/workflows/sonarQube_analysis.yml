@@ -56,7 +56,7 @@ jobs:
           -Dsonar.projectKey=BobApp \
           -Dsonar.host.url=http://localhost:9000 \
           -Dsonar.projectName='BobApp' \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN_BACK }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_BACK }}
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
