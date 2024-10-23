@@ -21,6 +21,7 @@ jobs:
       - name: Debug Docker Login
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_REPO }}
         run: |
           echo "length : ${#DOCKER_PASSWORD}"
           echo "DOCKER USERNAME: ${{ secrets.DOCKER_REPO }}"
