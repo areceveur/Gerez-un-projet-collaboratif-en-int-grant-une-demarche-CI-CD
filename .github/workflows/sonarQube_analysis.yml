@@ -43,7 +43,7 @@ jobs:
         run: |
           cd back
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=areceveur_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+          -Dsonar.projectKey=areceveur_bobapp-back
 
       - name: Clean SonarQube Cache
         run: rm -rf /home/runner/.sonar/_tmp/
@@ -55,7 +55,7 @@ jobs:
           cd front
           npm install
           npx sonar-scanner \
-          -Dsonar.projectKey=areceveur_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
+          -Dsonar.projectKey=areceveur_bobapp-front \
           -Dsonar.organization=areceveur \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.sources=src/app \
