@@ -56,6 +56,7 @@ jobs:
           npm install
           npx sonar-scanner \
           -Dsonar.projectKey=areceveur_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
+          -Dsonar.organization=areceveur \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.sources=src/app \
           -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info \
