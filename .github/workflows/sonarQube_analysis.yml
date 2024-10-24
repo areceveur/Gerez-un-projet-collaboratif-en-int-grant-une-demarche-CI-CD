@@ -55,8 +55,8 @@ jobs:
           cd front
           npm install
           npx sonar-scanner \
-          -Dsonar.projectKey=areceveur_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-          -Dsonar.host.url=https://sonarcloud.io\
+          -Dsonar.projectKey=areceveur_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
+          -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.sources=src/app \
           -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info \
           -Dsonar.ws.timeout=36000 \
