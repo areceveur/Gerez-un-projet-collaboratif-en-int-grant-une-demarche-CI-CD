@@ -3,7 +3,7 @@ name: Workflow des tests
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   tests:
